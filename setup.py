@@ -21,10 +21,10 @@ setup(
 
     ]
     },
-    license="",
+    license="HIT",
     url="https://github.com/FU-Long12138/Grey-Predict",
     scripts=['scripts/demo.py'],
-    classifiers= [
+    classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
