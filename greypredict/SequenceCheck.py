@@ -3,7 +3,16 @@ import numpy as np
 
 
 # 事前检验{准光滑检验、级比检验}
-def Before_Evaluation(data, evaluation_index="level_check", remove_set=False):
+def Before_Evaluation(data: np.ndarray or list, evaluation_index="level_check", remove_set=False):
+    """
+    对即将进行灰色预测的数据进行事前检验
+    :param data: 即将进行灰色预测的数据
+    :param evaluation_index: 评估指标, 可选择{"level_check", "smooth_check"}, 分别为级比检验与准光滑检验
+    :param remove_set: 在进行准光滑检验时是否去除前两个数据
+    :return: True代表通过检验, False代表未通过检验
+    """
+    if isinstance(data, list):
+        data = np.array(data)
     if evaluation_index == "level_check":
         if sum(data < 0) != 0:
             print('级比检验序列不可有负数，请对序列数据做平移变换')
@@ -19,7 +28,7 @@ def Before_Evaluation(data, evaluation_index="level_check", remove_set=False):
                     trues.append(0)
                 lambdas.append(lambdai)
             if 0 in trues:
-                print('级比检验不通过，请对序列数据做平移变换')
+                print('级比检验不通过')
                 return False
             else:
                 print('级比检验通过')
@@ -63,14 +72,20 @@ def Before_Evaluation(data, evaluation_index="level_check", remove_set=False):
                     return False
 
 
-def translation(data, fuc, n=5, max_iter=500):
-    """对不满足事前检验的序列数据做平移变换"""
-    pass
-
-
 # 事后检验, {相对误差、均方差比值、小误差概率、灰色关联度}
-def After_Evaluation(true_data, hat_data, evaluation_index="Relative Error"):
-    """对灰色预测进行事后检验, {相对误差检验、均方差比检验、小误差概率检验}"""
+def After_Evaluation(true_data: np.ndarray or list, hat_data: np.ndarray or list, evaluation_index="Relative Error"):
+    """
+    对灰色预测进行事后检验
+    :param true_data: 真实值
+    :param hat_data: 灰色预测的拟合值或预测值
+    :param evaluation_index: 评估指标, 提供了{相对误差检验、均方差比检验、小误差概率检验}三种指标,
+    对应的参数为{"Relative Error", "Mean Variance Ratio", "Probability of Small Error"}
+    :return:
+    """
+    if isinstance(true_data, list):
+        true_data = np.array(true_data)
+    if isinstance(hat_data, list):
+        hat_data = np.array(hat_data)
     e = true_data - hat_data
     re = np.abs(e / true_data)
     re_mean = np.mean(re)
@@ -80,38 +95,8 @@ def After_Evaluation(true_data, hat_data, evaluation_index="Relative Error"):
     Pe = np.mean(e)
     p_error = np.sum(np.abs(e - Pe) < (0.6745 * S1)) / len(e)
     if evaluation_index == "Relative Error":
-        if re_mean <= 0.01:
-            print("由相对误差判断模型预测精度为一级，相对误差为", re_mean)
-        elif 0.01 < re_mean <= 0.05:
-            print("由相对误差判断模型预测精度为二级，相对误差为", re_mean)
-        elif 0.05 < re_mean <= 0.10:
-            print("由相对误差判断模型预测精度为三级，相对误差为", re_mean)
-        elif 0.10 < re_mean <= 0.20:
-            print("由相对误差判断模型预测精度为四级，相对误差为", re_mean)
-        else:
-            print("不建议使用灰色预测模型，相对误差极大")
         return re_mean
     elif evaluation_index == "Mean Variance Ratio":
-        if 0 <= C0 < 0.35:
-            print("由均方差比值判断模型预测精度为一级，均方差比值为", C0)
-        elif 0.35 <= C0 < 0.5:
-            print("由均方差比值判断模型预测精度为二级，均方差比值为", C0)
-        elif 0.5 <= C0 < 0.65:
-            print("由均方差比值判断模型预测精度为三级，均方差比值为", C0)
-        elif 0.65 <= C0 <= 0.8:
-            print("由均方差比值判断模型预测精度为四级，均方差比值为", C0)
-        else:
-            print("不建议使用灰色预测模型，均方差比值极大，均方差比值为", C0)
         return C0
     elif evaluation_index == "Probability of Small Error":
-        if 0.95 < p_error <= 1:
-            print("由小误差概率判断模型预测精度为一级，小误差概率为", p_error)
-        elif 0.8 < p_error <= 0.95:
-            print("由小误差概率判断模型预测精度为二级，小误差概率为", p_error)
-        elif 0.70 < p_error <= 0.8:
-            print("由小误差概率判断模型预测精度为三级，小误差概率为", p_error)
-        elif 0.6 < p_error <= 0.7:
-            print("由小误差概率判断模型预测精度为四级，小误差概率为", p_error)
-        else:
-            print("不建议使用灰色预测模型，小误差概率极小，小误差概率为", p_error)
         return p_error

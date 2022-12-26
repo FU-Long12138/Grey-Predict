@@ -3,6 +3,8 @@ import numpy as np
 
 class GM11(object):
     def __init__(self, data):
+        if not isinstance(data, np.ndarray):
+            data = np.array(data)
         self.data = data
         self.AGO = None
         self.Z = None
@@ -12,10 +14,7 @@ class GM11(object):
 
     def model_fit(self):
         self.AGO = self.data.cumsum()
-        Z = []
-        for i in range(1, len(self.AGO)):
-            Z.append(0.5 * (self.AGO[i - 1] + self.AGO[i]))
-        self.Z = np.array(Z)
+        self.Z = np.array([0.5 * self.AGO[i-1] + 0.5 * self.AGO[i] for i in range(1, len(self.AGO))])
         B = np.mat(np.vstack((-self.Z, np.ones(len(self.Z))))).T
         Y = np.mat(np.delete(self.data, 0)).T
         a_hat = np.linalg.inv(B.T * B) * B.T * Y
@@ -80,20 +79,3 @@ class MetabolismGM11(GM11):
             self.data = np.append(self.data, x0_pre)
             pre_data[i] = x0_pre
         return pre_data
-
-
-class Verhulst(GM11):
-    def __init__(self, data):
-        super().__init__(data)
-
-    def model_fit(self):
-        self.AGO = self.data.cumsum()
-        Z = []
-        for i in range(1, len(self.AGO)):
-            Z.append(0.5 * (self.AGO[i - 1] + self.AGO[i]))
-        self.Z = np.array(Z)
-        B = np.mat(np.vstack((-self.Z, self.Z**2))).T
-        Y = np.mat(np.delete(self.data, 0)).T
-        a_hat = np.linalg.inv(B.T * B) * B.T * Y
-        a_hat = np.array(a_hat)
-        self.a, self.b = float(a_hat[0]), float(a_hat[1])
