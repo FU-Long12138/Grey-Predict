@@ -8,7 +8,7 @@ setup(
     name="greypredict",
     version=VERSION,
     author="Fu Long",
-    author_email="15045435783.com",
+    author_email="15045435783@163.com",
     description=DESCRIPTION,
     long_description_content_type="text/markdown",
     long_description=open('README.md', encoding="UTF8").read(),
@@ -16,12 +16,8 @@ setup(
     install_requires=['numpy'],
     keywords=['python', 'grey theory', 'grey predict'],
     data_files=[],
-    entry_points={
-    'console_scripts': [
-
-    ]
-    },
-    license="HIT",
+    entry_points={},
+    license="MIT",
     url="https://github.com/FU-Long12138/Grey-Predict",
     scripts=['scripts/demo.py'],
     classifiers=[

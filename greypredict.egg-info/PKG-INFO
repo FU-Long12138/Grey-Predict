@@ -4,8 +4,8 @@ Version: 0.0.1
 Summary: Short - term Prediction of Poor Data Using Grey Prediction Model
 Home-page: https://github.com/FU-Long12138/Grey-Predict
 Author: Fu Long
-Author-email: 15045435783.com
-License: UNKNOWN
+Author-email: 15045435783@163.com
+License: MIT
 Keywords: python,grey theory,grey predict
 Platform: UNKNOWN
 Classifier: Development Status :: 3 - Alpha
@@ -13,6 +13,7 @@ Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: Microsoft :: Windows
 Description-Content-Type: text/markdown
+License-File: LICENSE
 
 # Grey-Predict
 Short - term Prediction of Poor Data Using Grey Prediction Model
